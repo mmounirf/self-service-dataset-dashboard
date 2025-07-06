@@ -1,11 +1,27 @@
 import { Button, MantineProvider } from "@mantine/core";
 import { IconEyeBolt } from "@tabler/icons-react";
 import theme from "./theme";
+import FileWorker from "./web-workers/fileWorker?worker";
 
 function App() {
+	const worker = new FileWorker();
+
+	worker.onmessage = (event) => {
+		console.log("Worker response:", event.data);
+	};
+
 	return (
 		<MantineProvider theme={theme}>
-			<Button size="md" leftSection={<IconEyeBolt />}>
+			<Button
+				size="md"
+				leftSection={<IconEyeBolt />}
+				onClick={() =>
+					worker.postMessage({
+						type: "example",
+						payload: "Hello, Worker!",
+					})
+				}
+			>
 				Click Me
 			</Button>
 			<div>
